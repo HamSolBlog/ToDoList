@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import PhotosUI
 
 protocol TodoListRelode :AnyObject{
     /**
@@ -24,6 +25,8 @@ class TodoDetaileViewController: UIViewController {
     
     weak var todoListRelode: TodoListRelode?
     
+    @IBOutlet weak var imageView: UIImageView!
+    
     @IBOutlet weak var titleLableSpace: UITextField!
     
     @IBOutlet weak var lowBtn: UIButton!
@@ -40,6 +43,10 @@ class TodoDetaileViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        let imageViewAction = UITapGestureRecognizer(target: self, action: #selector(addImage))
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(imageViewAction)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -68,6 +75,20 @@ class TodoDetaileViewController: UIViewController {
         lowBtn.layer.cornerRadius = lowBtn.bounds.height / 2
         normalBtn.layer.cornerRadius = normalBtn.bounds.height / 2
         highBtn.layer.cornerRadius = highBtn.bounds.height / 2
+    }
+    
+    @objc func addImage(){
+        print("image")
+        fetchImage(filter: PHPickerFilter.images)
+    }
+    
+    func fetchImage(filter: PHPickerFilter?){
+        var configuration = PHPickerConfiguration(photoLibrary: .shared())
+        
+        configuration.filter = filter
+        
+        let picker = PHPickerViewController(configuration: configuration)
+        present(picker, animated: true)
     }
     
     @IBAction func buttenEventSpace(_ sender: UIButton) {
