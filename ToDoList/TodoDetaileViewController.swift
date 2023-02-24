@@ -24,8 +24,11 @@ class TodoDetaileViewController: UIViewController {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     weak var todoListRelode: TodoListRelode?
+    private var selection = [String: PHPickerResult]()
+    private var selectedAssetIdentifiers = [String]()
+    var fetchResults: PHFetchResult<PHAsset>?
     
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var imageView: UIView!
     
     @IBOutlet weak var titleLableSpace: UITextField!
     
@@ -61,34 +64,117 @@ class TodoDetaileViewController: UIViewController {
             
             deleteBtn.isHidden = false
             saveBtn.setTitle("업데이트", for: .normal)
+            print("업데이트")
         }
         else
         {
             deleteBtn.isHidden = true
             saveBtn.setTitle("저장", for: .normal)
+            print("저장")
         }
-        
     }
     
-    override func viewDidLayoutSubviews() {
+    override func viewDidLayoutSubviews()
+    {
         super.viewDidLayoutSubviews()
         lowBtn.layer.cornerRadius = lowBtn.bounds.height / 2
         normalBtn.layer.cornerRadius = normalBtn.bounds.height / 2
         highBtn.layer.cornerRadius = highBtn.bounds.height / 2
     }
     
-    @objc func addImage(){
-        print("image")
-        fetchImage(filter: PHPickerFilter.images)
+    
+    @IBOutlet weak var photoImageView: UIImageView!
+    {
+        didSet
+        {
+            photoImageView.contentMode = .scaleAspectFit
+        }
     }
     
-    func fetchImage(filter: PHPickerFilter?){
-        var configuration = PHPickerConfiguration(photoLibrary: .shared())
+    @objc func addImage()
+    {
+        self.checkPermission()
         
-        configuration.filter = filter
+        let allPhotosOptions = PHFetchOptions()
+        allPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+    }
+    
+    /**
+        접근 권한을 확인하는 함수
+     */
+    func checkPermission()
+    {
+        // PHPhotoLibrary의 권한 부여 상태
+        switch PHPhotoLibrary.authorizationStatus()
+        {
+            // 접근권한이 있거나 제한적으로 접권한이 있을 경우
+            case .authorized, .limited : DispatchQueue.main.async
+            {
+                self.fetchImage()
+            }
+            
+            // 제한이 거부되어 있을 경우
+            case .denied : DispatchQueue.main.async
+            {
+                self.showAutorizationDeniedAlert()
+            }
+            
+            // 아직 접근권한이 설정되어 있지 않은 경우
+            case .notDetermined : self.notDeterminedMesage()
+                
+            default : break
+        }
+    }
+    
+    /**
+        Gallery에 접근 하기 위한 함수
+     */
+    func fetchImage()
+    {
+        var configuration = PHPickerConfiguration(photoLibrary: .shared()) // PhotoLibrary 옵션 설정
+                
+        configuration.selectionLimit = 1    // 가져올 수 있는 사진의 개수
         
-        let picker = PHPickerViewController(configuration: configuration)
-        present(picker, animated: true)
+        let picker = PHPickerViewController(configuration: configuration) // PHPickerViewController 인스턴스화
+        picker.delegate = self // 데이터를 전달 할 delegate
+        present(picker, animated: true) // PHPickerViewController 화면 열기
+    }
+    
+    /**
+        권한이 거부되어 있을 경우의 알림 함수
+     */
+    func showAutorizationDeniedAlert()
+    {
+        // UIAlertController를 이용한 메세지 객체 생성
+        let alert = UIAlertController(title: "포토라이브러리의 접근 권한을 활성화 해주세요.", message: nil, preferredStyle: .alert)
+        
+        // 버튼 생성 객체
+        alert.addAction(UIAlertAction(title: "닫기", style: .cancel))
+        alert.addAction(UIAlertAction(title: "설정으로 이동", style: .default, handler:
+        {
+            // 버튼의 액션 수행 이벤트 설정
+            action in
+            // url 객체 생성
+            guard let url = URL(string: UIApplication.openSettingsURLString) else {return}
+            
+            if UIApplication.shared.canOpenURL(url) // 앱이 처리 할수 있는 URL 확인
+            {
+                UIApplication.shared.open(url)      // URL 열기
+            }
+        }))
+        
+        self.present(alert, animated: true) // UIAlertController 화면 열기
+    }
+    
+    /**
+        아직 접근권한이 설정되어 있지 않은 경우 알림 함수
+     */
+    func notDeterminedMesage()
+    {
+        PHPhotoLibrary.requestAuthorization
+        {
+            staus in self.checkPermission()
+        }
     }
     
     @IBAction func buttenEventSpace(_ sender: UIButton) {
@@ -227,6 +313,43 @@ class TodoDetaileViewController: UIViewController {
         catch
         {
             print(error)
+        }
+    }
+}
+
+extension TodoDetaileViewController: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult])
+    {
+        let identifiers = results.map
+        {
+            $0.assetIdentifier ?? ""
+        }
+        
+        self.fetchResults = PHAsset.fetchAssets(withLocalIdentifiers: identifiers, options: nil)
+        
+        if let asset = self.fetchResults?.firstObject
+        {
+            self.loadImage(asset: asset)
+        }
+        
+        self.dismiss(animated: true)
+    }
+}
+
+extension TodoDetaileViewController {
+    
+    func loadImage(asset: PHAsset)
+    {
+        let imageManeger = PHImageManager()
+//        let scale = UIScreen.main.scale
+        let imageSize = CGSize(width: 150, height: 150)
+        let options = PHImageRequestOptions()
+        options.deliveryMode = .highQualityFormat
+        
+        imageManeger.requestImage(for: asset, targetSize: imageSize, contentMode: .aspectFill, options: options)
+        {
+            image, info in
+            self.photoImageView.image = image
         }
     }
 }
