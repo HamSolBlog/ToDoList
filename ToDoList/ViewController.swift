@@ -65,15 +65,18 @@ class ViewController: UIViewController {
     }
     
     /**
-     로컬DB에 접근해서
-     저장된 데이터를 가져오는 함수
+         로컬DB에 접근해서
+         저장된 데이터를 가져오는 함수
      */
     func fetcData()
     {
+        // CoreData를 통해서 ToDoList타입의 객체를 반환 받음
         let fetcReqeust: NSFetchRequest<ToDoList> = ToDoList.fetchRequest()
+        // CoreData의 Container에 접근해서 데이터를 반환 받을 객체
         let context = appdelegate.persistentContainer.viewContext
         do
         {
+            // Container의 viewContext를 이용해서 ToDoList타입의 데이터를 받아서 todoList에 적재
             self.todoList = try context.fetch(fetcReqeust)
         }
         catch
@@ -132,10 +135,13 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource{
     // 조회된 데이터를 셀에 알맞게 출력
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
+        // 지정된 사용 식별자에 대한 사용 가능한 테이블 뷰 셀 객체를 반환하고 테이블에 추가합니다.
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCell", for: indexPath) as! ToDoCell
-
+        
+        // topTitleLabel.text 프로퍼티에 값을 할당한다.
         cell.topTitleLabel.text = todoList[indexPath.row].title
         
+        // Data타입을 String타입으로 변환한다.
         if let hasDate = todoList[indexPath.row].date
         {
             let formatter = DateFormatter()
@@ -149,11 +155,22 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource{
             cell.dateLabel.text = ""
         }
         
+        // Data타입을 UIImage타입으로 반환한다.
+        if let image = UIImage(data:todoList[indexPath.row].photo!)
+        {
+            cell.photoView.image = image
+            print(image)
+        }
+        
+        // priority의 인덱스에 따라 색상을 반환한다.
         let priority = todoList[indexPath.row].prioirty
         let priorityColor = PrioirtyLevel(rawValue: priority)?.Color
         
+        // 받아온 색상을 Cell 프로퍼티에 할당
         cell.prioirtyView.backgroundColor = priorityColor
+        // 표시 모양을 원형으로 만들어 준다.
         cell.prioirtyView.layer.cornerRadius = cell.prioirtyView.bounds.height / 2
+        
         
         return cell
     }
@@ -161,8 +178,11 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource{
     // 상세조회
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
+        // TodoDetaileViewController를 인스턴스화 한다.
         let detaileVC = TodoDetaileViewController(nibName: "TodoDetaileViewController", bundle: nil)
         
+        // TodoDetaileViewController에 데이터 넘겨주거나 받아 오기위해
+        // ViewController의 인스턴스를 넘겨준다
         detaileVC.todoListRelode = self
         detaileVC.selectdeTodoList = todoList[indexPath.row]
         

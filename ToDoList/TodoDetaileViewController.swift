@@ -24,8 +24,8 @@ class TodoDetaileViewController: UIViewController {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     weak var todoListRelode: TodoListRelode?
-    private var selection = [String: PHPickerResult]()
-    private var selectedAssetIdentifiers = [String]()
+//    private var selection = [String: PHPickerResult]()
+    var selectedAssetIdentifiers = [String]()
     var fetchResults: PHFetchResult<PHAsset>?
     
     @IBOutlet weak var imageView: UIView!
@@ -57,6 +57,7 @@ class TodoDetaileViewController: UIViewController {
         if let hasData = selectdeTodoList
         {
             titleLableSpace.text = hasData.title
+            photoImageView.image = UIImage(data: hasData.photo!)
             
             priority = PrioirtyLevel(rawValue: hasData.prioirty)
             
@@ -244,6 +245,7 @@ class TodoDetaileViewController: UIViewController {
         object.title = titleLableSpace.text
         object.date = Date()
         object.uuid = UUID()
+        object.photo = photoImageView.image?.jpegData(compressionQuality: 0.1)
         
         object.prioirty = priority?.rawValue ?? PrioirtyLevel.Level1.rawValue
     }
@@ -269,6 +271,7 @@ class TodoDetaileViewController: UIViewController {
             
             fetchData.first?.title = titleLableSpace.text
             fetchData.first?.date = Date()
+            fetchData.first?.photo = photoImageView.image?.jpegData(compressionQuality: 0.1)
             fetchData.first?.prioirty = self.priority?.rawValue ?? PrioirtyLevel.Level1.rawValue
         }
         catch
@@ -325,6 +328,7 @@ extension TodoDetaileViewController: PHPickerViewControllerDelegate {
             $0.assetIdentifier ?? ""
         }
         
+        self.selectedAssetIdentifiers = identifiers
         self.fetchResults = PHAsset.fetchAssets(withLocalIdentifiers: identifiers, options: nil)
         
         if let asset = self.fetchResults?.firstObject
@@ -341,7 +345,6 @@ extension TodoDetaileViewController {
     func loadImage(asset: PHAsset)
     {
         let imageManeger = PHImageManager()
-//        let scale = UIScreen.main.scale
         let imageSize = CGSize(width: 150, height: 150)
         let options = PHImageRequestOptions()
         options.deliveryMode = .highQualityFormat

@@ -37,33 +37,43 @@
                                                     </constraints>
                                                 </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="253" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0np-yM-0hQ">
-                                                    <rect key="frame" x="90" y="31" width="284" height="20.5"/>
+                                                    <rect key="frame" x="90" y="31" width="229" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V6a-ye-aUn">
-                                                    <rect key="frame" x="90" y="71.5" width="284" height="38.5"/>
+                                                    <rect key="frame" x="90" y="71.5" width="229" height="38.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="aqI-9T-aed">
+                                                    <rect key="frame" x="339" y="40" width="55" height="55"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="55" id="Pe9-e3-kuo"/>
+                                                        <constraint firstAttribute="height" constant="55" id="wOU-aK-Dma"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailingMargin" secondItem="0np-yM-0hQ" secondAttribute="trailing" constant="20" id="1ER-On-gdR"/>
                                                 <constraint firstItem="OJe-sB-h1Q" firstAttribute="leading" secondItem="kU6-jn-to6" secondAttribute="leadingMargin" constant="20" id="3Vl-WZ-FLT"/>
                                                 <constraint firstItem="0np-yM-0hQ" firstAttribute="leading" secondItem="OJe-sB-h1Q" secondAttribute="trailing" constant="20" id="HE8-Ad-FHZ"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="V6a-ye-aUn" secondAttribute="trailing" constant="20" id="Wn3-EC-e8K"/>
+                                                <constraint firstAttribute="trailing" secondItem="aqI-9T-aed" secondAttribute="trailing" constant="20" id="T4d-xF-hPI"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="V6a-ye-aUn" secondAttribute="bottom" constant="20" id="aM2-ca-NWs"/>
                                                 <constraint firstItem="V6a-ye-aUn" firstAttribute="top" secondItem="0np-yM-0hQ" secondAttribute="bottom" constant="20" id="dIP-og-vCx"/>
+                                                <constraint firstItem="aqI-9T-aed" firstAttribute="leading" secondItem="V6a-ye-aUn" secondAttribute="trailing" constant="20" id="hhx-dF-qZ0"/>
+                                                <constraint firstItem="aqI-9T-aed" firstAttribute="leading" secondItem="0np-yM-0hQ" secondAttribute="trailing" constant="20" id="iII-au-e0B"/>
                                                 <constraint firstItem="0np-yM-0hQ" firstAttribute="top" secondItem="kU6-jn-to6" secondAttribute="topMargin" constant="20" id="omQ-2q-9kc"/>
                                                 <constraint firstItem="V6a-ye-aUn" firstAttribute="leading" secondItem="OJe-sB-h1Q" secondAttribute="trailing" constant="20" id="skp-xm-4xw"/>
                                                 <constraint firstItem="OJe-sB-h1Q" firstAttribute="leading" secondItem="kU6-jn-to6" secondAttribute="leadingMargin" constant="20" id="tNK-lN-VBP"/>
+                                                <constraint firstItem="aqI-9T-aed" firstAttribute="top" secondItem="kU6-jn-to6" secondAttribute="top" constant="40" id="tro-UE-0Hb"/>
                                                 <constraint firstItem="OJe-sB-h1Q" firstAttribute="centerY" secondItem="kU6-jn-to6" secondAttribute="centerY" id="vRF-or-Rdr"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="dateLabel" destination="V6a-ye-aUn" id="t2b-5c-68A"/>
+                                            <outlet property="photoView" destination="aqI-9T-aed" id="NQb-QH-K7D"/>
                                             <outlet property="prioirtyView" destination="OJe-sB-h1Q" id="0UJ-Qj-Vev"/>
                                             <outlet property="topTitleLabel" destination="0np-yM-0hQ" id="6fQ-lt-nhk"/>
                                         </connections>
